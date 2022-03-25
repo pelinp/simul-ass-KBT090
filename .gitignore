@@ -1,3 +1,6 @@
 # All files that can't be read by unix
 
 ~$*
+
+*.xlsx
+*.docx
