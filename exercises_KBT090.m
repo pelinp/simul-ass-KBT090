@@ -58,11 +58,35 @@ Y_CO2s = CER/(S_consumed*D);
 % compunds differ slightly. This must be wrong...
 
 %% B3 B)
-clear, clc
+clear, clc, clf
 %S0=20g/L, X0=0.1g/L, P0=0mM V_L = 2L
-Y0 = [20 0.1 0 0.000265]';
+Y0 = [20 0.1 0]';
 [t,Y]=ode15s(@Ex_B3, [0 30], Y0);
 
 plot(t,Y)
 
+%% B4
+clear, clc, clf
 
+% V_tot = V_l + V_g = 10L
+%V_l,initial = 0.5L
+%F_l = 0.2L/h
+%F_g,in = 0.06 m3/h
+%S_0 = 25 g/L
+%S_initial = 5 g/L
+
+%y_O2,in/initial = 0.2095
+%y_CO2,in/inital = 0.0004
+
+%X_initial = 0.5 g/L
+%S_initial = 5 g/L
+%c_O2,initial = 265 μM
+O2_initial=0.2095*1/790;
+
+Y0 = [5 0.5 0.5 2.6519e-04 0.2095 0.0004 9.5];
+[t,Y] = ode15s(@Ex_B4, [0 36], Y0);
+
+plot(t,Y)
+legend('[S]','[X]','[V]', '[O2]', '[O2gas]','[CO2gas]','[Vg]')
+xlabel('Time (h)')
+ylabel('KOncentration (g/L)')
