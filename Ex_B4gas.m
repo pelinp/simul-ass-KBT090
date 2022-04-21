@@ -29,8 +29,8 @@ my = (mymax*S)/(K_s+S);
 
 %derivatives
 dO2dt = 
-dCO2dt = 
-dVgdt = -F0;
+dCO2dt
+dVgdt = -Fin;
 
 dYdt(1,1) = dO2dt;
 dYdt(2,1) = dCO2dt;

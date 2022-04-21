@@ -4,7 +4,7 @@ X = Y(2,1);
 V = Y(3,1);
 O2 = Y(4,1);
 O2g = Y(5,1);
-CO2 = Y(6,1);
+CO2g = Y(6,1);
 Vg = Y(7,1);
 
 %parameters
@@ -23,7 +23,7 @@ Q=60; %L/h
 
 
 
-Yxs=0.5; %g/g
+Yxs=0.5; %gX/gS
 Ysx=1/Yxs; %g/g
 Yos=0.01; %mol/g
 Ycs=0.01; %mol/g
@@ -37,9 +37,9 @@ my = (mymax*S)/(K_s+S);
 dSdt = -Ysx*my*X+((F_in/V)*(S0-S));
 dXdt = (my*X)-((F_in/V)*X);
 dVdt = F_in;
-dO2dt = K_La*y_O2in*P_tot/He-O2-(Yox*my*X);
-dO2gdt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-O2-CO2))*O2)-K_La*((O2*P_tot/He)-(CO2*P_tot/He))*V*(R*T/(Vg*P_tot));
-dCOg2dt = (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-O2-CO2))*CO2)+Yco2x*my*X*V*((R*T)/(Vg*P_tot));
+dO2dt = K_La*(O2g*P_tot/He-O2)-(Yox*my*X);
+dO2gdt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-O2g-CO2g))*O2g)-K_La*((O2g*P_tot/He)-O2)*V*(R*T/(Vg*P_tot));
+dCOg2dt = (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-O2g-CO2g))*CO2g)+Yco2x*my*X*V*((R*T)/(Vg*P_tot));
 dVgdt = -F_in;
 
 dYdt(1,1) = dSdt;

@@ -86,7 +86,14 @@ O2_initial=0.2095*1/790;
 Y0 = [5 0.5 0.5 2.6519e-04 0.2095 0.0004 9.5];
 [t,Y] = ode15s(@Ex_B4, [0 36], Y0);
 
+figure(1)
 plot(t,Y)
 legend('[S]','[X]','[V]', '[O2]', '[O2gas]','[CO2gas]','[Vg]')
 xlabel('Time (h)')
 ylabel('KOncentration (g/L)')
+
+figure(2)
+for i=1:7
+    subplot(3,3,i)
+    plot(t,Y(:,i))
+end
