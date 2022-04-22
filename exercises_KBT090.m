@@ -228,8 +228,8 @@ Y0 = [5 0.5 0.5 2.6519e-04 0.2095 0.0004 9.5];
 [t,Y] = ode15s(@Ex_B4_D, [0 36], Y0);
 
 figure('name', 'D')
-for i=1:7
-    subplot(3,3,i)
+for i=1:6
+    subplot(3,2,i)
     plot(t,Y(:,i))
             if i==1
         title('[S]')
