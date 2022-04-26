@@ -1,6 +1,4 @@
-%% Simulation assignment 
-
-function q=batch(t,Y)
+ function q=simulation_function(t,Y)
 
 S_ec = Y(1,1);
 G = Y(2,1);
@@ -51,22 +49,49 @@ g21=10; %mmol ATP/mmol S
 gamma71=0.025; %gX/mmol E
 g71=12; %mmol ATP/mmol E
 
-%Kinetic rate expressions:
-v1=q(1,1)=q1_max*S_ec/((K_1Sec+S_ec));
-v2=q(2,1)=q2_max*G*ATP/((K_2G+G)*(K_2ATP+ATP));
-v3=q(3,1)=q3_max*G*ATP/((K_3G+G)*(K_3ATP+ATP)*(1+ATP/K_3IATP));
-v4=q(4,1)=q4_max*Pyr*cO2_L/((K_4Pyr+Pyr)*(K_4O2+cO2_L)*(1+S_ec/K_4ISec)); 
-v5=q(5,1)=q5_max*Pyr/(K_5Pyr+Pyr);
-v6=q(6,1)=q6_max*E*cO2_L/((K_6E+E)*(K_6O2+cO2_L)*(1+S_ec/K_6ISec));
-v7=q(7,1)=q7_max*E*ATP/((K_7E+E)*(K_7ATP+ATP)*(1+S_ec/K_7ISec));
+% parameters
+G0 = 1000; %mmol/L
+S_ec0 = 0.1; %mM
+ATP0 = 1; %mM
+Pyr0 = 0.5; %mM
+X0 = 0.1; %g/L
 
-dS_ecdt = -r_s*X+((F_in/V)*(S0-S));
-dGdt = 
-dATPdt = 
-dPyrdt = 
-dcO2_Ldt = K_La*(O2g*P_tot/He-O2)-(r_o*X);
-dEdt = 
+V = 75; %L
+F_in = 0;
+K_La = 500; %/h
+P_tot = 1; %? atm 
+He = 790; %atm L/mol
+Q = 1; %VVM at 20°C and 1atm
+Vg = 25; %L
+y_CO2in = 0.0005;
+y_O2in = 0.2095; 
+T=293; %K
+R=0.08206; %atm L/mol K
+
+%Kinetic rate expressions:
+q(1,1)=q1_max*S_ec/((K_1Sec+S_ec));
+q(2,1)=q2_max*G*ATP/((K_2G+G)*(K_2ATP+ATP));
+q(3,1)=q3_max*G*ATP/((K_3G+G)*(K_3ATP+ATP)*(1+ATP/K_3IATP));
+q(4,1)=q4_max*Pyr*cO2_L/((K_4Pyr+Pyr)*(K_4O2+cO2_L)*(1+S_ec/K_4ISec)); 
+q(5,1)=q5_max*Pyr/(K_5Pyr+Pyr);
+q(6,1)=q6_max*E*cO2_L/((K_6E+E)*(K_6O2+cO2_L)*(1+S_ec/K_6ISec));
+q(7,1)=q7_max*E*ATP/((K_7E+E)*(K_7ATP+ATP)*(1+S_ec/K_7ISec));
+
+v = [q(1,1);q(2,1);q(3,1);q(4,1);q(5,1);q(6,1);q(7,1)];
+%specific reaction rates
+r_s=A.'.*v; %[Glucose; O2]
+r_p=B.'.*v; %[CO2; Ethanol]
+r_x=gamma.'.*v; %[Cells]
+r_met=G.'.*v; %[Glucose_cyt(S_ec); ATP; Pyr]
+
+%derivatives
+dS_ecdt = -r_met(1)*X;
+dGdt = -r_s(1)*X+((F_in/V)*(S0-S));
+%dATPdt = 
+%dPyrdt = 
+dcO2_Ldt = K_La*(yO2*P_tot/He-cO2_L)-(r_s(2)*X);
+%dEdt = 
 dXdt = (r_x*X)-((F_in/V)*X);
-dyCO2dt = (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-O2g-CO2g))*CO2g)+Yco2x*my*X*V*((R*T)/(Vg*P_tot));
-dyO2dt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-O2g-CO2g))*O2g)-K_La*((O2g*P_tot/He)-O2)*V*(R*T/(Vg*P_tot));
+dyCO2dt = (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yCO2)+r_p(1)*X*V*((R*T)/(Vg*P_tot));
+dyO2dt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yO2)-K_La*((yO2*P_tot/He)-cO2_L)*V*(R*T/(Vg*P_tot));
 
