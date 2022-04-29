@@ -1,14 +1,14 @@
- function q=simulation_function(t,Y)
+ function dYdt=simulation_function(t,Y)
 
-S_ec = Y(1,1);
-G = Y(2,1);
-ATP = Y(3,1);
-Pyr = Y(4,1);
-cO2_L = Y(5,1);
-E = Y(6,1);
-X= Y(7,1);
-yCO2 = Y(8,1);
-yO2 = Y(9,1);
+S_ec = Y(1);
+G = Y(2);
+ATP = Y(3);
+Pyr = Y(4);
+cO2_L = Y(5);
+E = Y(6);
+X= Y(7);
+yCO2 = Y(8);
+yO2 = Y(9);
 
 %kinetic parameters
 q1_max = 14; %mmol/gDW/h
@@ -45,9 +45,9 @@ K_7ISec = 0.5; %mM
 %True biomass yield in biosynthesis (1 C-mol glucose -> 1 C-mol cells)
 gamma21=0.15; %gX / mmol S 
 %ATP cons due to growth
-g21=10; %mmol ATP/mmol S
+g22=10; %mmol ATP/mmol S
 gamma71=0.025; %gX/mmol E
-g71=12; %mmol ATP/mmol E
+g72=12; %mmol ATP/mmol E
 
 % parameters
 G0 = 1000; %mmol/L
@@ -67,6 +67,13 @@ y_CO2in = 0.0005;
 y_O2in = 0.2095; 
 T=293; %K
 R=0.08206; %atm L/mol K
+rho=500; %g DW/L cell
+
+% Matrices
+A = [-1 0; 0 0; 0 0; 0 -3; 0 0; 0 -4; 0 0];
+B = [0 0; 0 0; 0 0; 3 0; 1 1; 2 -1; 0 -1];
+gamma = [0;gamma21;0;0;0;0;gamma71];
+Gmet = [1 0 0; -1 -g22 0; -1 2 2; 0 6 -1; 0 0 -1; 0 8 0; 0 -g72 0];
 
 %Kinetic rate expressions:
 q(1,1)=q1_max*S_ec/((K_1Sec+S_ec));
@@ -79,19 +86,20 @@ q(7,1)=q7_max*E*ATP/((K_7E+E)*(K_7ATP+ATP)*(1+S_ec/K_7ISec));
 
 v = [q(1,1);q(2,1);q(3,1);q(4,1);q(5,1);q(6,1);q(7,1)];
 %specific reaction rates
-r_s=A.'.*v; %[Glucose; O2]
-r_p=B.'.*v; %[CO2; Ethanol]
-r_x=gamma.'.*v; %[Cells]
-r_met=G.'.*v; %[Glucose_cyt(S_ec); ATP; Pyr]
+r_s=A'*v; %[Glucose; O2]
+r_p=B'*v; %[CO2; Ethanol]
+r_x=gamma'*v; %[Cells]
+r_met=Gmet'*v; %[Glucose_cyt(S_ec); ATP; Pyr]
 
 %derivatives
-dS_ecdt = -r_met(1)*X;
-dGdt = -r_s(1)*X+((F_in/V)*(S0-S));
-%dATPdt = 
-%dPyrdt = 
-dcO2_Ldt = K_La*(yO2*P_tot/He-cO2_L)-(r_s(2)*X);
-%dEdt = 
-dXdt = (r_x*X)-((F_in/V)*X);
-dyCO2dt = (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yCO2)+r_p(1)*X*V*((R*T)/(Vg*P_tot));
-dyO2dt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yO2)-K_La*((yO2*P_tot/He)-cO2_L)*V*(R*T/(Vg*P_tot));
+dYdt=[ r_s(1)*X %+((F_in/V)*(S0-S)) %dS_ecdt
+        r_met(1)*X %dGmetdt
+        -r_met(2)*X+r_met(2)*rho %dATPdt FEL
+        -r_met(3)*X + r_met(3)*rho %dPyrdt FEL
+        K_La*(yO2*P_tot/He-cO2_L)+(r_s(2)*X) %dcO2_Ldt
+        r_p(2)*X %dEdt
+        (r_x*X) %-((F_in/V)*X) %dXdt
+        (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yCO2)+r_p(1)*X*V*((R*T)/(Vg*P_tot)) %dyCO2dt 
+        (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yO2)-K_La*((yO2*P_tot/He)-cO2_L)*V*(R*T/(Vg*P_tot)) %dyO2dt 
+        ];
 
