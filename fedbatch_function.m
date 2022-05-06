@@ -1,35 +1,42 @@
- function dYdt=batch_function(t,Y)
+function dYdt=fedbatch_function(t,Y)
 
 S_ec = Y(1);
-G = Y(2);
-ATP = Y(3);
-Pyr = Y(4);
-cO2_L = Y(5);
-E = Y(6);
-X= Y(7);
-yCO2 = Y(8);
+X = Y(2);
+E = Y(3);
+cO2_L = Y(4);
+V = Y(5);
+G = Y(6);
+ATP = Y(7);
+Pyr = Y(8);
 yO2 = Y(9);
+yCO2 = Y(10);
 
 %kinetic parameters
 q1_max = 14; %mmol/gDW/h
 K_1Sec = 1; %mM
+
 q2_max = 2.7; %mmol/gDW/h
 K_2G = 0.05; %mM
 K_2ATP = 0.20; %mM
+
 q3_max = 60; %mmol/gDW/h 
 K_3G = 0.8; %mM intracell.
 K_3ATP = 0.5;%mM intracell.
 K_3IATP = 1; %mM intracell.
+
 q4_max = 10; %mmol/gDW/h
 K_4Pyr = 0.2; %mM intracell.
 K_4O2 = 0.02; %mM
 K_4ISec = 1; %mM 
+
 q5_max = 40; %mmol/gDW/h 
 K_5Pyr = 5;  %mM intracell.
+
 q6_max = 6; %mmol/gDW/h
 K_6E = 3; %mM
 K_6O2 = 0.02; %mM
 K_6ISec = 0.5; %mM
+
 q7_max = 2; %mmol/gDW/h
 K_7E = 0.5; %mM
 K_7ATP = 0.5; %mM
@@ -43,20 +50,15 @@ g22=10; %mmol ATP/mmol S
 gamma71=0.025; %gX/mmol E
 g72=12; %mmol ATP/mmol E
 
-% parameters
-G0 = 1000; %mmol/L
-S_ec0 = 0.1; %mM
-ATP0 = 1; %mM
-Pyr0 = 0.5; %mM
-X0 = 0.1; %g/L
-
-V = 75; %L
-F_in = 0;
+Vtot = 100; %L
+Vfin = 75; %L
+F_in = 0.01; %L/h
+S0 = 1000; % mmol/L koncentration med flödet
 K_La = 500; %/h
 P_tot = 1; %? atm 
 He = 790/1000; %atm L/mmol
 Q = 1*V*60; %VVM at 20°C and 1atm
-Vg = 25; %L
+Vg = 80-F_in; %L
 y_CO2in = 0.0005;
 y_O2in = 0.2095; 
 T=293; %K
@@ -92,23 +94,24 @@ grho_G=(Gmet(:,1).*rho)'*v;
 my = r_x; 
 
 %derivatives
-dS_ecdt = r_s(1)*X; %+((F_in/V)*(S0-S))
+dS_ecdt = r_s(1)*X+((F_in/V)*(S0-S_ec));
+dXdt =  (r_x*X)-((F_in/V)*X);
+dEdt = r_p(2)*X-((F_in/V)*E);
+dcO2_Ldt = K_La*(yO2*P_tot/He-cO2_L)+(r_s(2)*X);
+dVdt = F_in;
 dGdt = -my*G+grho_G;
 dATPdt = -my*ATP+grho_ATP;
 dPyrdt = -my*Pyr+grho_Pyr;
-dcO2_Ldt = K_La*(yO2*P_tot/He-cO2_L)+(r_s(2)*X);
-dEdt = r_p(2)*X;
-dXdt =  (r_x*X); %-((F_in/V)*X)
-dyCO2dt =  (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yCO2)+r_p(1)*X*V*((R*T)/(Vg*P_tot));
 dyO2dt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yO2)-K_La*((yO2*P_tot/He)-cO2_L)*V*(R*T/(Vg*P_tot));
+dyCO2dt =  (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yCO2)+r_p(1)*X*V*((R*T)/(Vg*P_tot));
 
 dYdt=[ dS_ecdt
+       dXdt 
+       dEdt
+       dcO2_Ldt
+       dVdt
        dGdt 
        dATPdt 
        dPyrdt 
-       dcO2_Ldt 
-       dEdt
-       dXdt 
-       dyCO2dt 
-       dyO2dt];
-
+       dyO2dt
+       dyCO2dt];
