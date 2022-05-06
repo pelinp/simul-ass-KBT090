@@ -1,5 +1,5 @@
 function dYdt=fedbatch_function(t,Y)
-
+global F_in
 S_ec = Y(1);
 X = Y(2);
 E = Y(3);
@@ -52,7 +52,7 @@ g72=12; %mmol ATP/mmol E
 
 Vtot = 100; %L
 Vfin = 75; %L
-F_in = 0.01; %L/h
+%F_in = 0.1; %L/h
 S0 = 1000; % mmol/L koncentration med flödet
 K_La = 500; %/h
 P_tot = 1; %? atm 

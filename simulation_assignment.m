@@ -96,16 +96,17 @@ end
 
 %% Fedbatch PI control
 
-clc, clear, %clf
-Y0=[0 0.375 0 2.6519e-01 20 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 
-time=[0,1]
-Vfin = 75; %L 
-F_in = 0.01; %L/h
-Esp = 5;
-IntErr = 0;
-Kp = 100;
-Ki = 0;
+clc, clear, clf
+global F_in
 V=20;
+Y0=[0 0.375 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
+time=[0 1]
+Vfin = 75; %L 
+F_in = 0.001; %L/h
+Esp = 2;
+IntErr = 0;
+Kp = 0.001;
+Ki = 0.000001;
 Ttot=[];
 Ytot=[];
 Flows = [];
@@ -136,9 +137,20 @@ Ytot=[Ytot;Y];
         
 %end
 end
-plot(Ttot,Ytot(:,3))
-%%
+
+x=[Flows,Ytot(:,3),Ytot(:,2),Ytot(:,1)];
+plot(Ttot,x)
+legend('Flow','E','X','S_ec')
+xlim([0 70])
+ylim([0 100])
+%% hhh
+clf
 plot(Ttot,Flows)
-plot(Ttot,Ytot(:,:))
-legend('S_ec','X','E','cO2_L','V','G','ATP','Pyr','yO2')
+
+%%
+clf
+for i=1:10
+subplot(2,5,i)
+plot(Ttot,Ytot(:,i))
+end
 
