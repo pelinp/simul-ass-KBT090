@@ -1,14 +1,14 @@
  function dYdt=batch_function(t,Y)
 
 S_ec = Y(1);
-G = Y(2);
-ATP = Y(3);
-Pyr = Y(4);
-cO2_L = Y(5);
-E = Y(6);
-X= Y(7);
-yCO2 = Y(8);
-yO2 = Y(9);
+X = Y(2); 
+E = Y(3); 
+cO2_L = Y(4);
+G = Y(5);
+ATP = Y(6);
+Pyr = Y(7);
+yO2 = Y(8);
+yCO2 = Y(9);
 
 %kinetic parameters
 q1_max = 14; %mmol/gDW/h
@@ -103,12 +103,13 @@ dyCO2dt =  (Q/Vg)*(y_CO2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yCO2)+r_p(1)*X*V*((
 dyO2dt = (Q/Vg)*(y_O2in-((1-y_O2in-y_CO2in)/(1-yO2-yCO2))*yO2)-K_La*((yO2*P_tot/He)-cO2_L)*V*(R*T/(Vg*P_tot));
 
 dYdt=[ dS_ecdt
-       dGdt 
-       dATPdt 
-       dPyrdt 
-       dcO2_Ldt 
-       dEdt
        dXdt 
+       dEdt
+       dcO2_Ldt
+       dGdt
+       dATPdt 
+       dPyrdt
+       dyO2dt 
        dyCO2dt 
-       dyO2dt];
+       ];
 
