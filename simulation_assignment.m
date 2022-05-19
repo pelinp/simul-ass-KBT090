@@ -223,7 +223,7 @@ global F_in
 global K_La
 K_La = 500;
 V=20;
-Y0=[0 15 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
+Y0=[0 22.2 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
 time=[0 1]
 Vfin = 75; %L 
 F_in = 0.2; %L/h
@@ -531,7 +531,7 @@ global K_La
 K_La = 400;
 V=300;
 Vg=1000-V;
-Y0=[0 7 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
+Y0=[0 15.86 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
 time=[0 1]
 Vfin = 750; %L
 F_in = 8; %L/h
@@ -617,7 +617,7 @@ global Vg
 global K_La
 V=2000;
 Vg=10000-V;
-Y0=[0 16 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
+Y0=[0 19 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
 time=[0 1]
 Vfin = 7500; %L
 F_in = 20; %L/h
@@ -703,8 +703,8 @@ global Vg
 global K_La
 V=20000;
 Vg=100000-V;
-Y0=[0 9 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
-time=[0 1]
+Y0=[0 11.8 0 2.6519e-01 V 0.1 1 0.5 0.2095 0.0005]; %S_ec X E cO2_L V G ATP Pyr yO2 yCO2 
+time=[0 1];
 Vfin = 75000; %L
 F_in = 200; %L/h
 Esp = 1;
