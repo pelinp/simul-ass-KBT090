@@ -55,9 +55,11 @@ for i=1:9
         xlabel('Time [h]')
         ylabel('Mole fraction')
     end
+    set(gca,'fontname','times')
+    set(findall(gcf,'-property','FontSize'),'FontSize',12)
 end
 
-biomass_produced = Y(end,2)-Y(1,2)
+biomass_produced = Y(end,2)-Y(1,2) %g/L --> Titer
 substrate_consumed = (1000/1000)*180; %mmol/L
 Yield=biomass_produced/substrate_consumed
 
@@ -203,17 +205,37 @@ clf
 
 Extra=[Ytot(:,1),Ytot(:,2),Ytot(:,3)];
 subplot(1,2,1)
-plot(Ttot,Extra)
-legend('[S_ec]','[X]','[E]')
+yyaxis left
+set(gca, 'yColor','r')
+plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
+legend('[S_ec]','[X]','[E]','FontSize',14)
+xlabel('Time [h]','FontSize', 14)
+ylabel('Concentration [g L^-^1]','Color','r','FontSize', 14)
+yyaxis right
+set(gca, 'yColor','k')
+ylabel('Concentration [mM]','FontSize', 14)
+title('Extracellular metabolites','FontSize', 16)
+set(gca,'fontname','times')
+grid on
 subplot(1,2,2)
-plot(Ttot,Extra)
-legend('[S_ec]','[X]','[E]')
+yyaxis left
+set(gca, 'yColor','r')
+plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
+legend('[S_ec]','[X]','[E]','FontSize',14)
+xlabel('Time [h]','FontSize', 14)
+ylabel('Concentration [g L^-^1]','Color','r','FontSize', 14)
+yyaxis right
+set(gca, 'yColor','k')
+ylabel('Concentration [mM]','FontSize', 14)
+title('Extracellular metabolites','FontSize', 16)
+set(gca,'fontname','times')
+grid on
 
 
 biomass_produced = Y(end,2)*Y(end,5)-Ytot(1,2)*Ytot(1,5); %g
 substrate_consumed = (Ytot(1,1)*Ytot(1,5)+(Ytot(end,5)-20)*1000 - Ytot(end,1)*Vfin)/1000*180;
 Yield=biomass_produced/substrate_consumed
-
+Titer=biomass_produced/Ytot(end,5)
 Productivity=biomass_produced/(endtime*Ytot(end,5))
 
 %% Fedbatch PI control
@@ -264,23 +286,29 @@ end
 
 for d=1
     Volume=[Flows,Ytot(:,5)];
-    Extra=[Ytot(:,1)/0.18,Ytot(:,2),Ytot(:,3)/0.18]; %Y(:,1) är i mmol/L inte g/L som jag trodde
     Intra=[Ytot(:,6),Ytot(:,7),Ytot(:,8)];
     oxygen=[Ytot(:,4)];
     offgas=[Ytot(:,9),Ytot(:,10)];
     subplot(1,2,1)
     plot(Ttot,Volume)
-    title('Reactor volume and flow')
-    legend('Flow','Volume')
-    xlabel('Time [h]')
-    ylabel('Volume [L]')
+    title('Reactor volume and flow','FontSize', 16)
+    legend('Flow','Volume','FontSize', 14)
+    xlabel('Time [h]','FontSize', 14)
+    ylabel('Volume [L]','FontSize', 14)
+    set(gca,'fontname','times')
     grid on
     subplot(1,2,2)
-    plot(Ttot,Extra, Linewidth = 1)
-    legend('S_e_c','X','E')
-    xlabel('Time [h]')
-    ylabel('Concentration [g L^-^1]')
-    title('Extracellular metabolites')
+    yyaxis left
+    set(gca, 'yColor','r')
+    plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
+    legend('S_e_c','X','E','FontSize', 14)
+    xlabel('Time [h]','FontSize', 14)
+    ylabel('Concentration [g L^-^1]','Color','r','FontSize', 14)
+    yyaxis right 
+    set(gca, 'yColor','k')
+    ylabel('Concentration [mM]','FontSize', 14)
+    title('Extracellular metabolites','FontSize', 16)
+    set(gca,'fontname','times')
     grid on
 %     subplot(1,3,3)
 %     plot(Ttot,Intra)
@@ -309,7 +337,7 @@ endtime=Ttot(end)
 biomass_produced = Y(end,2)*Y(end,5)-Ytot(1,2)*Ytot(1,5) %g
 substrate_consumed = (Ytot(1,1)*Ytot(1,5)+(Ytot(end,5)-Ytot(1,5))*1000 - Ytot(end,1)*Vfin)/1000*180;
 Yield=biomass_produced/substrate_consumed
-
+Titer=biomass_produced/Ytot(end,5)
 TRY=Ytot(end,2)*Yield*(Ytot(end,2)/endtime); %TRY
 Productivity=biomass_produced/(endtime*Y(end,5))
 
@@ -377,10 +405,15 @@ for d=1
     ylabel('Volume [L]')
     grid on
     subplot(1,3,2)
-    plot(Ttot,Extra)
+    yyaxis left
+    set(gca, 'yColor','r')
+    plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
     legend('S_e_c','X','E')
     xlabel('Time [h]')
-    ylabel('Concentration [g L^-^1]')
+    ylabel('Concentration [g L^-^1]','Color','r')
+    yyaxis right 
+    set(gca, 'yColor','b')
+    ylabel('Concentration mM')
     title('Extracellular metabolites')
     grid on
     subplot(1,3,3)
@@ -456,10 +489,15 @@ for d=1
     ylabel('Volume [L]')
     grid on
     subplot(1,3,2)
-    plot(Ttot,Extra)
+    yyaxis left
+    set(gca, 'yColor','r')
+    plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
     legend('S_e_c','X','E')
     xlabel('Time [h]')
-    ylabel('Concentration [g L^-^1]')
+    ylabel('Concentration [g L^-^1]','Color','r')
+    yyaxis right 
+    set(gca, 'yColor','b')
+    ylabel('Concentration mM')
     title('Extracellular metabolites')
     grid on
     subplot(1,3,3)
@@ -571,43 +609,34 @@ flow=Flows(end);
 
 for d=1
     Volume=[Flows,Ytot(:,5)];
-    Extra=[Ytot(:,1),Ytot(:,2),Ytot(:,3)];
     Intra=[Ytot(:,6),Ytot(:,7),Ytot(:,8)];
-    Offgas=[Ytot(:,9),Ytot(:,10)];
-    subplot(1,5,1)
+    subplot(1,3,1)
     plot(Ttot,Volume)
     title('Reactor volume and flow')
     legend('Flow','Volume')
     xlabel('Time [h]')
     ylabel('Volume [L]')
     grid on
-    subplot(1,5,2)
-    plot(Ttot,Extra)
+    subplot(1,3,2)
+    yyaxis left
+    set(gca, 'yColor','r')
+    plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
     legend('S_e_c','X','E')
     xlabel('Time [h]')
-    ylabel('Concentration [g L^-^1]')
+    ylabel('Concentration [g L^-^1]','Color','r')
+    yyaxis right 
+    set(gca, 'yColor','b')
+    ylabel('Concentration mM')
     title('Extracellular metabolites')
     grid on
-    subplot(1,5,3)
+    subplot(1,3,3)
     plot(Ttot,Intra)
     title('Intracellular metabolites')
     legend('G','ATP','Pyr')
     xlabel('Time [h]')
     ylabel('Concentration [mM]')
     grid on
-    subplot(1,5,4)
-    plot(Ttot,Offgas)
-    legend('O2','CO2')
-    grid on
-    subplot(1,5,5)
-    plot(Ttot,Ytot(:,4))
-    legend('cO2_L')
-    grid on
 end
-biomass_produced = Y(end,2)*Y(end,5)-Ytot(1,2)*Ytot(1,5) %g
-substrate_consumed = (Ytot(1,1)*Ytot(1,5)+(Ytot(end,5)-Ytot(1,5))*1000 - Ytot(end,1)*Vfin)/1000*180;
-Yield=biomass_produced/substrate_consumed
-Productivity=biomass_produced/(endtime*Y(end,5))
 
 %% 10 000L reactor
 
@@ -756,7 +785,7 @@ for d=1
     ylabel('Volume [L]')
     grid on
     subplot(1,5,2)
-    plot(Ttot,Extra)
+    plot(Ttot,Ytot(:,1),Ttot,Ytot(:,2),Ttot,Ytot(:,3))
     legend('S_e_c','X','E')
     xlabel('Time [h]')
     ylabel('Concentration [g L^-^1]')
@@ -777,6 +806,31 @@ for d=1
     plot(Ttot,Ytot(:,4))
     legend('cO2_L')
     grid on
+end
+clf
+
+for d=1
+    subplot(1,2,1)
+    yyaxis left
+    set(gca, 'yColor','r')
+    plot(Ttot,Ytot(:,1),'b-',Ttot,Ytot(:,2),'r-',Ttot,Ytot(:,3),'g-')
+    legend('S_e_c','X','E','FontSize', 14)
+    xlabel('Time [h]','FontSize', 14)
+    ylabel('Concentration [g L^-^1]','Color','r','FontSize', 14)
+    yyaxis right 
+    set(gca, 'yColor','b')
+    ylabel('Concentration mM','FontSize', 14)
+    title('Extracellular metabolites','FontSize', 16)
+    grid on
+    set(gca, 'fontname','times')
+    subplot(1,2,2)
+    plot(Ttot,Ytot(:,4))
+    title('Oxygen in liquid phase','FontSize', 16)
+    legend('cO2_L','FontSize', 14)
+    xlabel('Time [h]','FontSize', 14)
+    ylabel('Concentration [mM]','FontSize', 14)
+    grid on
+    set(gca, 'fontname','times')
 end
 
 biomass_produced = Y(end,2)*Y(end,5)-Ytot(1,2)*Ytot(1,5) %g
